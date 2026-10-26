@@ -61,3 +61,10 @@ Repartir d'une base vide (rejoue `db/init.sql`) : `docker compose down -v`
 docker compose -f compose.yaml up -d --build
 ```
 Application sur http://localhost:8080
+
+### Sécurité
+## FRONT tp-shorty-front (alpine 3.24.2)
+Total: 8 (HIGH: 8, CRITICAL: 0) =>  Total: 3 (HIGH: 3, CRITICAL: 0)  2026-10-21T23:23:41.2514755Z
+ 
+Total: 12 (HIGH: 12, CRITICAL: 0) => API 2026-10-21T22:58:51.441935893Z
+
