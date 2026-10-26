@@ -11,7 +11,5 @@ services:
       target: dev
     environment:
       API_URL: http://api:3000
-    ports: !override
-      - "5173:5173"
     volumes:
       - ./front/src:/app/src
