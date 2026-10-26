@@ -42,3 +42,22 @@ cd front && npm ci && npm run dev           # http://localhost:5173
 ```
 
 Tests de l'API (il faut la base) : `DATABASE_URL=... npm test`.
+
+
+## Avec Docker
+
+### Développement
+```
+copy .env.example .env        # (cp sous Linux/macOS), puis choisir un mot de passe
+docker compose up -d --build
+```
+- Front (Vite, rechargement à chaud) : http://localhost:5173
+- PostgreSQL : localhost:5432
+
+Repartir d'une base vide (rejoue `db/init.sql`) : `docker compose down -v`
+
+### Production (sans la surcharge)
+```
+docker compose -f compose.yaml up -d --build
+```
+Application sur http://localhost:8080
