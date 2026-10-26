@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.get('/health', async (req, res) => {
   await pool.query('SELECT 1');
-  res.json({ status: 'ok' });
+  res.json({ status: 'Error' });
 });
 
 app.get('/api/links', async (req, res) => {
