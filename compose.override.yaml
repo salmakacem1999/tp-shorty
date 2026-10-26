@@ -13,4 +13,3 @@ services:
       API_URL: http://api:3000
     volumes:
       - ./front/src:/app/src
-    read_only: false
