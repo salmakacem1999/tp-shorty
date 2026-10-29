@@ -20,6 +20,7 @@ services:
 
   api:
     build: ./api
+    image: ${DOCKERHUB_USERNAME}/shorty-api:${TAG}
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${DB_PASSWORD}@db:5432/${POSTGRES_DB}
     networks: [front, back]
@@ -32,6 +33,7 @@ services:
     
   front:
     build: ./front
+    image: ${DOCKERHUB_USERNAME}/shorty-front:${TAG}
     ports:
       - "8080:8080"
     networks: [front]
