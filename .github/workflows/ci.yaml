@@ -33,7 +33,7 @@ jobs:
           npm test
           
       - name: Construire les images
-        run: docker compose -f compose.yaml build
+        run: docker compose -f compose.yaml build --pull
 
       - name: Analyser les images avec Trivy
         run: |
