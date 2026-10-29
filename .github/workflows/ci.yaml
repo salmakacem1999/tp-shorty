@@ -3,6 +3,7 @@ name: ci
 on:
   push:
     branches: [main,tp4]
+    tags: ["v*"]
 
 jobs:
   ci:
@@ -11,8 +12,8 @@ jobs:
       POSTGRES_USER: shorty
       POSTGRES_DB: shorty
       DB_PASSWORD: shorty
-      DOCKERHUB_USERNAME: salmakacem199
-      TAG: dev
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+      TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,3 +34,12 @@ jobs:
           
       - name: Construire les images
         run: docker compose -f compose.yaml build
+
+      - name: Connexion Docker Hub
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+      - name: Publier les images
+        run: docker compose push api front 
