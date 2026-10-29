@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: shorty
+      POSTGRES_DB: shorty
+      DB_PASSWORD: shorty
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Démarrer la base
+        run: docker compose up -d --wait db
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Tests de l'API
+        working-directory: api
+        env:
+          DATABASE_URL: postgres://shorty:shorty@localhost:5432/shorty
+        run: |
+          npm ci
+          npm test
+          
+      - name: Construire les images
+        run: docker compose -f compose.yaml build --pull
+
+      - name: Analyser les images avec Trivy
+        run: |
+          for image in api front; do
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v trivy-cache:/root/.cache \
+              aquasec/trivy image --severity CRITICAL --ignore-unfixed --exit-code 1 \
+              "$DOCKERHUB_USERNAME/shorty-$image:$TAG"
+          done
+
+      - name: Connexion Docker Hub
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+      - name: Publier les images
+        run: docker compose push api front 
