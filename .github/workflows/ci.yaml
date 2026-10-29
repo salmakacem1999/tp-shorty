@@ -11,6 +11,8 @@ jobs:
       POSTGRES_USER: shorty
       POSTGRES_DB: shorty
       DB_PASSWORD: shorty
+      DOCKERHUB_USERNAME: salmakacem199
+      TAG: dev
     steps:
       - uses: actions/checkout@v4
 
@@ -28,3 +30,6 @@ jobs:
         run: |
           npm ci
           npm test
+          
+      - name: Construire les images
+        run: docker compose -f compose.yaml build
