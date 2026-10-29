@@ -35,6 +35,16 @@ jobs:
       - name: Construire les images
         run: docker compose -f compose.yaml build
 
+      - name: Analyser les images avec Trivy
+        run: |
+          for image in api front; do
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v trivy-cache:/root/.cache \
+              aquasec/trivy image --severity CRITICAL --ignore-unfixed --exit-code 1 \
+              "$DOCKERHUB_USERNAME/shorty-$image:$TAG"
+          done
+
       - name: Connexion Docker Hub
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
