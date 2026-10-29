@@ -1,4 +1,5 @@
 # TP Shorty
+[![ci](https://github.com/salmakacem1999/tp-shorty/actions/workflows/ci.yml/badge.svg)](https://github.com/salmakacem1999/tp-shorty/actions/workflows/ci.yml)
 
 > **Projet de TP** du cours « Dév avec Docker » (M2 Expert Développement Full Stack). Ce n'est pas une application maintenue : elle sert de support aux exercices.
 
@@ -67,4 +68,32 @@ Application sur http://localhost:8080
 Total: 8 (HIGH: 8, CRITICAL: 0) =>  Total: 3 (HIGH: 3, CRITICAL: 0)  2026-10-21T23:23:41.2514755Z
  
 Total: 12 (HIGH: 12, CRITICAL: 0) => API 2026-10-21T22:58:51.441935893Z
+
+## Pipeline et publication des images
+
+À chaque push sur `main` et à chaque tag `v*`, le workflow `ci.yml` :
+1. lance les tests de l'API contre une vraie base PostgreSQL ;
+2. construit les images `shorty-api` et `shorty-front` ;
+3. les analyse avec Trivy (échec s'il reste une vulnérabilité CRITICAL corrigeable) ;
+4. les publie sur Docker Hub.
+
+                     Target                     │  Type  │ Vulnerabilities │ Secrets │
+├────────────────────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ salmakacem199/shorty-front:tp4 (alpine 3.24.2) │ alpine │        1        │    -    │
+└────────────────────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+salmakacem199/shorty-front:tp4 (alpine 3.24.2)
+==============================================
+Total: 1 (CRITICAL: 1)
+
+┌─────────────┬─────────────────┬──────────┬────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────┐
+│   Library   │  Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                        Title                         │
+├─────────────┼─────────────────┼──────────┼────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────┤
+│ brotli-libs │ CVE-2026-111497 │ CRITICAL │ fixed  │ 1.2.0-r1          │ 1.2.1-r0      │ brotli: Out-of-Bounds Write in Google Brotli Decoder │
+│             │                 │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2026-111497          │
+└─────────────┴─────────────────┴──────────┴────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────┘
 
