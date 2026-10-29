@@ -27,7 +27,7 @@ jobs:
       - name: Tests de l'API
         working-directory: api
         env:
-          DATABASE_URL: "postgres://shorty:shorty@localhost:5432/shorty"
+          DATABASE_URL: postgres://luce:luce@localhost:5432/luce
         run: |
           npm ci
           npm test
